@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>I nemici di Luffy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Rye&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --navy-0:#081522;
+  --navy-1:#0e2033;
+  --navy-2:#16304a;
+  --parchment:#f2e6c8;
+  --parchment-dark:#e2d0a3;
+  --poster-bg:#d9c8a1;
+  --poster-bg-dark:#c6b085;
+  --poster-ink:#4a3826;
+  --poster-ink-soft:#7d6344;
+  --ink:#3a2a17;
+  --ink-soft:#6b543a;
+  --flag-red:#b3312c;
+  --flag-red-dark:#8f2622;
+  --brass:#cf9f3f;
+  --brass-light:#e4c069;
+  --cream:#f4ecd8;
+  --leaf:#3fa96e;
+  --leaf-dark:#2f8054;
+  --line:rgba(207,159,63,0.35);
+  --shadow:0 10px 24px rgba(0,0,0,0.45);
+  --bg-image: none;
+  --sea-top:#123a63;
+  --sea-mid:#0c2c4d;
+  --sea-bottom:#050f1c;
+  --sun-glow:rgba(255,214,110,0.16);
+  --coral:#e0724a;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0;}
+body{
+  background:
+    var(--bg-image),
+    radial-gradient(ellipse at 12% -12%, var(--sun-glow), transparent 42%),
+    radial-gradient(ellipse at 88% 4%, rgba(255,255,255,0.09), transparent 36%),
+    radial-gradient(circle, rgba(244,236,216,0.05) 1.5px, transparent 1.5px) 0 0/34px 34px,
+    linear-gradient(180deg, var(--sea-top) 0%, var(--sea-mid) 38%, var(--sea-bottom) 78%, #030a14 100%);
+  background-size: cover, cover, cover, 34px 34px, cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--cream);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 56px;
+}
+
+.wrap{ max-width: 640px; margin: 0 auto; padding: 0 14px; }
+
+/* ---------- header ---------- */
+.app-header{ padding: 26px 18px 22px; text-align:center; position:relative; overflow:hidden; }
+.app-header::before{
+  content:""; position:absolute; inset:0;
+  background-image: radial-gradient(rgba(244,236,216,0.55) 1px, transparent 1.4px);
+  background-size: 22px 22px; opacity:0.10; pointer-events:none;
+}
+.header-wave{ position:absolute; left:0; right:0; bottom:-2px; width:100%; height:22px; opacity:0.35; }
+.app-logo{ width:64px; height:auto; margin:0 auto 8px; opacity:0.95; display:block; }
+.app-title{
+  font-family:'Pirata One', cursive; font-size: 2.3rem; letter-spacing: 0.5px; margin: 0;
+  color: var(--brass-light); text-shadow: 0 2px 0 rgba(0,0,0,0.4); line-height:1.1;
+}
+.app-sub{ margin: 8px auto 0; max-width: 440px; color: rgba(244,236,216,0.72); font-size: 0.85rem; line-height:1.5; }
+.stats-row{ margin-top:14px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+.stat-pill{
+  background: rgba(207,159,63,0.12); border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 14px; font-size: 0.78rem; color: var(--brass-light); font-weight:600;
+}
+.save-indicator{
+  position:fixed; top:10px; right:10px; font-size:0.68rem; padding:5px 10px; border-radius:999px;
+  background: rgba(8,21,34,0.85); border:1px solid var(--line); color: rgba(244,236,216,0.75);
+  z-index: 60; opacity:0; transition: opacity .3s ease; pointer-events:none;
+}
+.save-indicator.show{ opacity:1; }
+.save-indicator.err{ color:#ffb4a8; border-color:#b3312c; }
+
+/* ---------- tab switch ---------- */
+.tab-switch{ display:flex; gap:6px; max-width:640px; margin: 6px auto 0; padding: 0 14px; }
+.tab-btn{
+  flex:1; padding:10px 8px; border-radius:12px; border:1px solid var(--line);
+  background: rgba(22,48,74,0.55); color: rgba(244,236,216,0.75);
+  font-family:'Poppins',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer;
+}
+.tab-btn.active{ background: var(--brass); color: var(--navy-0); border-color: var(--brass); }
+
+/* ---------- saga nav ---------- */
+.saga-nav{
+  position: sticky; top:0; z-index: 40; display:flex; gap:8px; overflow-x:auto;
+  padding: 10px 14px; background: linear-gradient(180deg, var(--navy-0) 70%, rgba(8,21,34,0.0));
+  backdrop-filter: blur(6px); scrollbar-width:none;
+}
+.saga-nav::-webkit-scrollbar{ display:none; }
+.nav-pill{
+  flex:0 0 auto; border:1px solid var(--line); background: rgba(22,48,74,0.7); color: rgba(244,236,216,0.85);
+  padding:7px 13px; border-radius:999px; font-size:0.78rem; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+
+/* ---------- swipe views ---------- */
+.view-wrap{ overflow:hidden; }
+.view-track{ display:flex; width:200%; transition: transform .28s ease; }
+.view-panel{ width:50%; flex:0 0 50%; min-width:0; }
+
+/* ---------- saga sections (episodes) ---------- */
+.saga-section{ margin: 22px 0; scroll-margin-top: 64px; }
+.saga-header{
+  display:flex; align-items:center; gap:10px; padding: 4px 2px 10px;
+  border-bottom: 1px solid var(--line); cursor:pointer; user-select:none;
+}
+.saga-num{
+  flex:0 0 auto; width:26px; height:26px; border-radius:50%; border:1px solid var(--brass);
+  color:var(--brass-light); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700;
+}
+.saga-name{ flex:1; font-family:'Pirata One', cursive; font-size:1.26rem; color: var(--brass-light); letter-spacing:0.3px; }
+.saga-progress{ font-size:0.72rem; color: rgba(244,236,216,0.55); font-weight:500; white-space:nowrap; }
+.saga-caret{ transition: transform .25s ease; color: rgba(244,236,216,0.6); font-size:0.8rem; }
+.saga-section.collapsed .saga-caret{ transform: rotate(-90deg); }
+.saga-tools{ display:flex; gap:2px; }
+.icon-btn{ border:none; background:transparent; color: rgba(244,236,216,0.7); cursor:pointer; font-size:0.85rem; padding:4px 6px; line-height:1; }
+.icon-btn:hover{ color: var(--brass-light); }
+.progress-bar{ height:4px; border-radius:3px; background: rgba(244,236,216,0.1); margin: 8px 2px 0; overflow:hidden; }
+.progress-bar-fill{ height:100%; background: var(--leaf); border-radius:3px; transition: width .3s ease; }
+.saga-body{ overflow:hidden; max-height: 20000px; transition: max-height .3s ease; }
+.saga-section.collapsed .saga-body{ max-height:0; }
+
+.ep-list{ padding: 8px 2px 4px; }
+.ep-row{
+  display:flex; align-items:flex-start; gap:12px; padding:11px 8px; border-radius:10px; cursor:pointer;
+  border-bottom:1px solid rgba(244,236,216,0.06); transition: background .18s ease;
+}
+.ep-row:active{ background: rgba(244,236,216,0.06); }
+.ep-row.watched{ background: rgba(63,169,110,0.10); }
+.ep-check{
+  flex:0 0 auto; width:24px; height:24px; margin-top:2px; border-radius:50%; border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:transparent;
+}
+.ep-row.watched .ep-check{ background: var(--leaf); border-color: var(--leaf); color:#fff; }
+.ep-main{ flex:1; min-width:0; }
+.ep-num{ color: var(--brass-light); font-weight:700; font-size:0.74rem; margin-right:6px; }
+.ep-title{ font-size:0.85rem; line-height:1.35; color: rgba(244,236,216,0.85); }
+.ep-row.watched .ep-title{ color: var(--cream); }
+.ep-villain-chip{
+  margin-top:7px; display:inline-flex; align-items:center; gap:6px; background: rgba(207,159,63,0.14);
+  border:1px solid var(--line); border-radius:999px; padding:3px 10px 3px 3px; font-size:0.74rem;
+  color: var(--brass-light); cursor:pointer; font-weight:600;
+}
+.ep-villain-avatar{
+  width:20px; height:20px; border-radius:50%; overflow:hidden; flex:0 0 auto;
+  background: rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;
+}
+.ep-villain-avatar img{ width:100%; height:100%; object-fit:cover; }
+.ep-villain-avatar svg{ width:60%; height:60%; opacity:0.6; }
+.ep-edit-btn{ flex:0 0 auto; margin-top:1px; }
+.add-ep-row{
+  border:1.5px dashed var(--line); border-radius:10px; padding:12px; text-align:center;
+  color: rgba(244,236,216,0.6); cursor:pointer; margin-top:8px; font-size:0.82rem;
+}
+.empty-note{ font-size:0.8rem; color: rgba(244,236,216,0.5); padding: 6px 6px 2px; font-style: italic; }
+.add-saga-row{ display:flex; justify-content:center; margin: 30px 0 10px; }
+.btn-ghost{
+  background:transparent; border:1px solid var(--line); color: var(--brass-light); padding:10px 18px;
+  border-radius:999px; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer;
+}
+
+/* ---------- gallery (wanted posters) ---------- */
+.gal-section{ margin: 22px 0; scroll-margin-top: 64px; }
+.villain-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px 12px; padding: 16px 4px 6px; }
+@media (min-width: 480px){ .villain-grid{ grid-template-columns: repeat(3, 1fr); } }
+.poster{
+  background: var(--poster-bg); color: var(--poster-ink);
+  border: 7px solid var(--poster-ink); padding: 10px 8px 12px;
+  clip-path: polygon(
+    1% 0%, 20% 1.5%, 40% 0%, 60% 1.5%, 80% 0%, 99% 1%,
+    100% 18%, 98.5% 36%, 100% 54%, 99% 72%, 100% 90%, 98% 100%,
+    78% 98.5%, 58% 100%, 38% 98.5%, 18% 100%, 0% 99%,
+    1.5% 80%, 0% 60%, 1.5% 40%, 0% 20%
+  );
+  box-shadow: var(--shadow); transform: rotate(var(--rot, 0deg)); transition: transform .2s ease; cursor:pointer;
+}
+.poster:active{ transform: rotate(0deg) scale(0.97); }
+.poster-inner{ border: 1px solid var(--poster-ink-soft); padding: 8px 6px 9px; }
+.poster-wanted{
+  font-family:'Rye', cursive; font-size: 1.5rem; letter-spacing: 0.5px;
+  text-align:center; color: var(--poster-ink); line-height:0.95; margin-bottom:7px;
+}
+.poster-frame{
+  width:100%; aspect-ratio: 1 / 1; background: var(--poster-bg-dark); border: 1px solid rgba(74,56,38,0.4);
+  overflow:hidden; display:flex; align-items:center; justify-content:center; filter: sepia(0.18) contrast(1.02);
+}
+.poster-frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+.poster-placeholder{ width:56%; height:56%; opacity:0.5; }
+.poster-subtitle{
+  margin-top:9px; text-align:center; font-size:0.62rem; letter-spacing:1.5px; color: var(--poster-ink);
+  font-family:'Rye', cursive; display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.poster-subtitle .flourish{ font-size:0.7rem; opacity:0.8; }
+.poster-name{
+  margin-top:4px; text-align:center; font-weight:800; font-size:0.87rem; letter-spacing:0.3px;
+  text-transform:uppercase; line-height:1.25; word-break: break-word; color: var(--poster-ink);
+}
+.poster-bounty{ margin-top:6px; text-align:center; font-size:0.92rem; font-weight:800; color: var(--poster-ink); letter-spacing:0.3px; }
+.poster-footer-row{ margin-top:8px; display:flex; align-items:center; justify-content:space-between; padding:0 1px; }
+.poster-seal{ width:16px; height:16px; opacity:0.75; flex:0 0 auto; }
+.poster-tag{ font-size:0.6rem; color: var(--poster-ink-soft); font-weight:700; letter-spacing:0.3px; }
+.gal-empty{
+  grid-column: 1/-1; border:1.5px dashed var(--line); border-radius:14px; padding:18px 12px;
+  text-align:center; color: rgba(244,236,216,0.55); font-size:0.82rem;
+}
+.saga-nav.saga-select-wrap{ display:block; overflow:visible; padding: 8px 14px; }
+.saga-select{
+  width:100%; background: rgba(22,48,74,0.85); border:1px solid var(--line); color: var(--cream);
+  padding:11px 14px; border-radius:12px; font-family:'Poppins',sans-serif; font-size:0.86rem; font-weight:600;
+  appearance:none; -webkit-appearance:none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e4c069' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat; background-position: right 12px center; background-size:16px;
+}
+
+/* ---------- modal ---------- */
+.overlay{
+  position:fixed; inset:0; background: rgba(4,10,17,0.6); z-index:80; display:flex; align-items:flex-end;
+  opacity:0; pointer-events:none; transition: opacity .2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.sheet{
+  width:100%; max-width:640px; margin:0 auto; background: var(--navy-2); border-top: 2px solid var(--brass);
+  border-radius: 20px 20px 0 0; padding: 18px 20px calc(20px + env(safe-area-inset-bottom));
+  transform: translateY(100%); transition: transform .28s cubic-bezier(.2,.9,.3,1); max-height: 88vh; overflow-y:auto;
+}
+.overlay.show .sheet{ transform: translateY(0); }
+.sheet-handle{ width:38px; height:4px; border-radius:3px; background: rgba(244,236,216,0.25); margin: 0 auto 14px; }
+.sheet-title{ font-family:'Pirata One', cursive; font-size:1.28rem; color: var(--brass-light); margin: 0 0 14px; }
+.field{ margin-bottom:14px; }
+.field label{ display:block; font-size:0.74rem; color: rgba(244,236,216,0.6); margin-bottom:5px; font-weight:600; }
+.field input[type=text], .field input[type=url], .field input[type=number], .field textarea, .field select{
+  width:100%; background: rgba(8,21,34,0.55); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; color: var(--cream); font-family:'Poppins',sans-serif; font-size: 0.92rem;
+}
+.field textarea{ resize:vertical; min-height:52px; }
+.field small{ display:block; margin-top:5px; font-size:0.68rem; color:rgba(244,236,216,0.45); line-height:1.4; }
+.row2{ display:flex; gap:10px; }
+.row2 .field{ flex:1; }
+.villain-block{ border-top:1px solid var(--line); margin-top:4px; padding-top:14px; }
+.img-picker{ display:flex; align-items:center; gap:12px; }
+.img-preview{
+  width:64px; height:64px; border-radius:10px; background: rgba(8,21,34,0.5); border: 1px solid var(--line);
+  overflow:hidden; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+}
+.img-preview img{ width:100%; height:100%; object-fit:cover; }
+.img-preview svg{ width:60%; height:60%; opacity:0.4; }
+.upload-btn{
+  border:1px solid var(--line); background: rgba(207,159,63,0.1); color: var(--brass-light);
+  padding:8px 12px; border-radius:8px; font-size:0.78rem; cursor:pointer; font-weight:600;
+}
+.remove-img{ border:none; background:none; color:#ffb4a8; font-size:0.72rem; cursor:pointer; text-decoration:underline; }
+.google-btn{
+  width:100%; margin-top:10px; padding:10px; border-radius:10px; border:1px solid var(--line);
+  background: rgba(244,236,216,0.05); color: var(--cream); font-size:0.82rem; font-weight:600; cursor:pointer; text-align:center;
+}
+.google-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+.sheet-actions{ display:flex; gap:10px; margin-top:6px; }
+.btn{ flex:1; padding:12px 14px; border-radius:12px; border:none; font-weight:700; font-size:0.88rem; cursor:pointer; font-family:'Poppins',sans-serif; }
+.btn-primary{ background: var(--brass); color: var(--navy-0); }
+.btn-secondary{ background: rgba(244,236,216,0.08); color: var(--cream); }
+.btn-danger{ background: transparent; color:#ffb4a8; border:1px solid #7a2b26; }
+.danger-row{ margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<div class="save-indicator" id="saveIndicator">Salvataggio…</div>
+
+<div class="app-header">
+  <svg class="app-logo" viewBox="0 0 100 100" fill="none">
+    <g stroke="#e4c069" stroke-width="5" stroke-linecap="round">
+      <line x1="18" y1="20" x2="60" y2="78"/>
+      <line x1="82" y1="20" x2="40" y2="78"/>
+    </g>
+    <g fill="#e4c069">
+      <circle cx="18" cy="20" r="5"/><circle cx="60" cy="78" r="5"/>
+      <circle cx="82" cy="20" r="5"/><circle cx="40" cy="78" r="5"/>
+    </g>
+    <path d="M22 42 Q30 16 50 25 Q70 16 78 42 Q64 29 50 33 Q36 29 22 42 Z" fill="#cf9f3f" stroke="#3a2a17" stroke-width="1.5"/>
+    <circle cx="50" cy="53" r="24" fill="#f4ecd8" stroke="#3a2a17" stroke-width="2"/>
+    <path d="M29 59 Q50 74 71 59 Q67 68 50 70 Q33 68 29 59 Z" fill="#f4ecd8" stroke="#3a2a17" stroke-width="2"/>
+    <path d="M38 46 L46 50 L38 56 L34 50 Z" fill="#16304a"/>
+    <path d="M62 46 L54 50 L62 56 L66 50 Z" fill="#16304a"/>
+    <path d="M48 54 L52 54 L50 60 Z" fill="#16304a"/>
+    <g stroke="#3a2a17" stroke-width="1.5">
+      <line x1="38" y1="63" x2="62" y2="63"/>
+      <line x1="43" y1="61" x2="43" y2="66"/>
+      <line x1="50" y1="61" x2="50" y2="66"/>
+      <line x1="57" y1="61" x2="57" y2="66"/>
+    </g>
+  </svg>
+  <h1 class="app-title">I nemici di Luffy</h1>
+  <p class="app-sub">Spuntate le puntate guardate: il nemico compare da solo. Scorrete per vedere la galleria dei nemici sbloccati.</p>
+  <div class="stats-row">
+    <span class="stat-pill" id="statWatched">0 puntate viste</span>
+    <span class="stat-pill" id="statVillains">0 nemici incontrati</span>
+  </div>
+  <svg class="header-wave" viewBox="0 0 400 20" preserveAspectRatio="none">
+    <path d="M0 10 Q25 2 50 10 T100 10 T150 10 T200 10 T250 10 T300 10 T350 10 T400 10" stroke="#cf9f3f" stroke-width="2" fill="none"/>
+  </svg>
+</div>
+
+<div class="tab-switch">
+  <button class="tab-btn active" id="tabEpisodes">📖 Episodi</button>
+  <button class="tab-btn" id="tabGallery">🏴‍☠️ Nemici sbloccati</button>
+</div>
+
+<div class="saga-nav" id="sagaNav"></div>
+
+<div class="view-wrap" id="viewWrap">
+  <div class="view-track" id="viewTrack">
+    <div class="view-panel">
+      <div class="wrap">
+        <div id="sagaList"></div>
+        <div class="add-saga-row"><button class="btn-ghost" id="addSagaBtn">+ Nuova saga</button></div>
+      </div>
+    </div>
+    <div class="view-panel">
+      <div class="wrap">
+        <div id="galleryList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- episode modal -->
+<div class="overlay" id="epOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 class="sheet-title" id="epSheetTitle">Nuova puntata</h3>
+    <div id="epMetaFields">
+      <div class="field"><label>Saga</label><select id="fSaga"></select></div>
+      <div class="row2">
+        <div class="field"><label>Numero puntata</label><input type="number" id="fNum" placeholder="Es. 4"></div>
+        <div class="field" style="flex:2"><label>Titolo puntata</label><input type="text" id="fTitle" placeholder="Titolo della puntata"></div>
+      </div>
+      <div class="field">
+        <label>Nemico incontrato (facoltativo)</label>
+        <input type="text" id="fVillainName" placeholder="Lascia vuoto se questa puntata non ne presenta uno nuovo">
+      </div>
+    </div>
+
+    <div class="villain-block" id="villainBlock">
+      <div class="field">
+        <label>Immagine del nemico</label>
+        <div class="img-picker">
+          <div class="img-preview" id="imgPreview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#cf9f3f" stroke-width="1.4"><path d="M2 8 L12 3 L22 8 L12 13 Z"/><path d="M6 10 v7 M18 10 v7 M6 17 h12"/><circle cx="12" cy="8" r="1.4" fill="#cf9f3f"/></svg>
+          </div>
+          <div style="flex:1;">
+            <input type="file" id="fFile" accept="image/*" style="display:none;">
+            <button type="button" class="upload-btn" id="fUploadBtn">Carica foto</button>
+            <br><button type="button" class="remove-img" id="fRemoveImg" style="display:none; margin-top:6px;">rimuovi immagine</button>
+          </div>
+        </div>
+        <input type="url" id="fImgUrl" placeholder="oppure incolla un link immagine" style="margin-top:8px;">
+        <button type="button" class="google-btn" id="fGoogleBtn">🔍 Cerca "nome nemico" su Google Immagini</button>
+        <small>Si apre Google Immagini in una nuova scheda. Salva o copia il link dell'immagine scelta, poi torna qui e caricala o incollala sopra: il browser non permette di prenderla in automatico.</small>
+      </div>
+      <div id="villainExtraFields">
+        <div class="field">
+          <label>Taglia in Berry (facoltativo)</label>
+          <input type="number" id="fBounty" placeholder="Es. 5000000 — lascia vuoto se non ne ha una">
+        </div>
+        <div class="field"><label>Note (facoltativo)</label><textarea id="fNote" placeholder="Un ricordo, un dettaglio, una battuta…"></textarea></div>
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" id="epCancel">Annulla</button>
+      <button class="btn btn-primary" id="epSave">Salva</button>
+    </div>
+    <div class="danger-row" id="epDeleteRow" style="display:none;">
+      <button class="btn btn-danger" id="epDelete" style="width:100%;">Elimina puntata</button>
+    </div>
+  </div>
+</div>
+
+<!-- saga modal -->
+<div class="overlay" id="sagaOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h3 class="sheet-title" id="sagaSheetTitle">Nuova saga</h3>
+    <div class="field"><label>Nome della saga</label><input type="text" id="fSagaName" placeholder="Es. Alabasta"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" id="sagaCancel">Annulla</button>
+      <button class="btn btn-primary" id="sagaSave">Salva</button>
+    </div>
+    <div class="danger-row" id="sagaDeleteRow" style="display:none;">
+      <button class="btn btn-danger" id="sagaDelete" style="width:100%;">Elimina questa saga</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'op-nemici-state-v2';
+
+const SAGA_NAMES = [
+  'East Blue','Alabasta','Skypiea','Water Seven & Enies Lobby','Thriller Bark',
+  'Marineford','Fishman Island','Dressrosa','Whole Cake Island','Wano Country','Egghead & oltre'
+];
+
+// [numero, titolo (italiano), nemico-o-null, taglia in berry-o-null]
+const EAST_BLUE_EPISODES = [
+[1,"Sono io Rufy! L'uomo che diventerà il re dei pirati","Alvida",5000000],
+[2,"Roronoa Zoro: Il cacciatore di pirati",null,null],
+[3,"Una coppia improbabile: il pirata e il cacciatore di pirati",'Morgan "Ascia di Ferro"',null],
+[4,"Il passaggio del cappello",null,null],
+[5,"Il circo arriva in città",null,null],
+[6,"Il distruttore di bestie",null,null],
+[7,"Il duello disperato",null,null],
+[8,"Chi ride per ultimo?","Buggy il Clown",15000000],
+[9,"Il racconta storie",null,null],
+[10,"Il bluff e il bluffatore",null,null],
+[11,"Il bluffatore e il bluffatore",null,null],
+[12,"La guerra sulla spiaggia",null,null],
+[13,"I pirati del Gatto Nero",null,null],
+[14,"Buoni pirati contro cattivi pirati",null,null],
+[15,"Il piano perfetto",null,null],
+[16,"Il lungo artiglio",null,null],
+[17,"La nona vita del gatto","Kuro",16000000],
+[18,"Lo strano custode della giungla",null,null],
+[19,"Il giuramento di Zoro",null,null],
+[20,"Il re dei camerieri",null,null],
+[21,"Rispetto per Sanji",null,null],
+[22,"Una ricetta per il disastro","Don Krieg",17000000],
+[23,"Il pirata dal piede rosso",null,null],
+[24,"Il miglior spadaccino",'Mihawk "Occhi di Falco"',null],
+[25,"Pearl Jam",null,null],
+[26,"Naufragio",null,null],
+[27,"Arriva Ghin",null,null],
+[28,"Blitz Krieg",null,null],
+[29,"La svolta di Don",null,null],
+[30,"Nuovo membro dell'equipaggio",null,null],
+[31,"I Tritoni",null,null],
+[32,"Il ladro dal cuore d'oro",null,null],
+[33,"Il cecchino marcato",null,null],
+[34,"Ci vuole un ladro",null,null],
+[35,"La bella della battaglia",null,null],
+[36,"Sopravvivi! Il legame tra Bellemere e Nami",null,null],
+[37,"Sporco traditore!",null,null],
+[38,"Guerra tra specie",null,null],
+[39,"Braccia contro braccia",null,null],
+[40,"Il ritorno del guerriero",null,null],
+[41,"Luffy a pieno potere! La determinazione di Nami e il cappello di paglia",null,null],
+[42,"Esplosione! Il feroce attacco di Arlong dal mare",null,null],
+[43,"Fine dell'impero dei Tritoni! Nami è mia amica!","Arlong",20000000],
+[44,"Partire con un sorriso! Addio, villaggio di Cocoyashi!",null,null],
+[45,"Taglia! Cappello di Paglia Luffy diventa famoso nel mondo!",null,null],
+[46,"Inseguite Cappello di Paglia! La grande avventura del piccolo Buggy!",null,null],
+[47,"L'attesa è finita! Il ritorno del Capitano Buggy!",null,null],
+[48,"La città dell'inizio e della fine! Sbarco a Loguetown!",null,null],
+[49,"Kitetsu III e Yubashiri! Le nuove spade di Zoro e il sergente maggiore donna",null,null],
+[50,"Usopp vs. Daddy the Parent! Duello a mezzogiorno!","Daddy",null],
+[51,"Battaglia di cucina infuocata? Sanji vs la bella chef!",null,null],
+[52,"La vendetta di Buggy! L'uomo che sorride sulla piattaforma d'esecuzione!",null,null],
+[53,"La leggenda è iniziata! Rotta verso la Grand Line!","Smoker",null],
+[54,"Preludio a una nuova avventura! Apis, la misteriosa ragazza!",null,null],
+[55,"Creatura miracolosa! Il segreto di Apis e l'isola leggendaria!",null,null],
+[56,"Eric attacca! Grande fuga dall'isola della corazzata!",null,null],
+[57,"Un'isola solitaria nel mare lontano! La leggendaria isola perduta!",null,null],
+[58,"Scontro tra le rovine! Zoro contro Eric!","Eric",null],
+[59,"Luffy completamente circondato! La strategia segreta del Commodoro Nelson!","Ammiraglio Nelson",null],
+[60,"Attraverso il cielo volano! La leggenda dei 1000 anni rivive!",null,null],
+[61,"Scontro furioso! Attraversa la Linea Rossa!",null,null]
+];
+
+// [numero, titolo (italiano), nemico-o-null, taglia in berry-o-null]
+const ALABASTA_EPISODES = [
+[62,"La balena gigante",null,null],
+[63,"Promesse",null,null],
+[64,"Benvenuti a Whisky Peak",null,null],
+[65,"Solo contro tutti",null,null],
+[66,"Duello inspiegabile",null,null],
+[67,"Si riprende il mare!",null,null],
+[68,"La forza dei sogni",null,null],
+[69,"Una questione di forza di volontà",null,null],
+[70,"Il tempo si è fermato?",null,null],
+[71,"I giganti",null,null],
+[72,"L'ira di Rufy",null,null],
+[73,"L'ultima sfida",null,null],
+[74,"Le statue di cera",null,null],
+[75,"L'incantesimo dei colori",null,null],
+[76,"Pirati alla riscossa","Mr. 3",24000000],
+[77,"Addio isola dei giganti",null,null],
+[78,"Nami è malata",null,null],
+[79,"Attacco a sorpresa",null,null],
+[80,"Alla ricerca del dottore",null,null],
+[81,"È una strega o è un dottore?",null,null],
+[82,"La valanga",null,null],
+[83,"La scalata",null,null],
+[84,"La renna con il naso blu",null,null],
+[85,"Il dottore e la renna",null,null],
+[86,"Un sogno da salvare",null,null],
+[87,"La difesa della bandiera",null,null],
+[88,"L'arma segreta di Chopper",null,null],
+[89,"La sconfitta del re","Wapol",null],
+[90,"Il miracolo dei ciliegi",null,null],
+[91,"Addio, isola di Drum!",null,null],
+[92,"Le stravaganze di Mr. 2","Mr. 2 Bon Clay",32000000],
+[93,"Arrivo ad Alabasta",null,null],
+[94,"Due fratelli speciali",null,null],
+[95,"Fuoco, fiamme… e fratelli",null,null],
+[96,"La città verde",null,null],
+[97,"Avventure nel deserto",null,null],
+[98,"I pirati del deserto",null,null],
+[99,"Guerrieri per caso",null,null],
+[100,"Il capo dei rivoltosi",null,null],
+[101,"Un uomo di nome Scorpion",null,null],
+[102,"Ancora verso Yuba",null,null],
+[103,"L'appuntamento",null,null],
+[104,"Ultimi preparativi",null,null],
+[105,"La città dei sogni",null,null],
+[106,"La trappola",null,null],
+[107,"Operazione Utopia",null,null],
+[108,"Chiusi in gabbia",null,null],
+[109,"Finalmente liberi",null,null],
+[110,"Rufy e Crocodile a confronto","Crocodile",81000000],
+[111,"Gli animali del regno di Alabasta",null,null],
+[112,"La battaglia decisiva: rivoltosi contro esercito reale",null,null],
+[113,"Paesaggi di guerra",null,null],
+[114,"La talpa e il battitore",null,null],
+[115,"Trasformazioni d'attacco",null,null],
+[116,"Balletto di guerra",null,null],
+[117,"Il bastone Klimattack, l'arma speciale di Nami",null,null],
+[118,"Pluton, l'arma segreta",null,null],
+[119,"Una spada che taglia l'acciaio",null,null],
+[120,"Bandiera bianca",null,null],
+[121,"Non è tutto perduto",null,null],
+[122,"Conto alla rovescia",null,null],
+[123,"Il libro della storia",null,null],
+[124,"Trenta secondi alla fine",null,null],
+[125,"Il sacrificio di Pell",null,null],
+[126,"La pioggia è tornata sul regno di Alabasta",null,null],
+[127,"Giustizia, finalmente",null,null],
+[128,"Fuga da Alabasta",null,null],
+[129,"Il discorso della principessa Bibi",null,null],
+[130,"Nico Robin è la settima",null,null]
+];
+
+// [numero, titolo (italiano), nemico-o-null, taglia in berry-o-null]
+const SKYPIEA_EPISODES = [
+[144,"Masira, il re del recupero delle navi affondate",null,null],
+[145,"State lontani dalla flotta di Barbabianca",null,null],
+[146,"Vietato sognare",null,null],
+[147,"Capitano Orangutan",null,null],
+[148,"La leggenda di Noland il bugiardo",null,null],
+[149,"L'uccello del sud",null,null],
+[150,"Scontro fra Bellamy e la Coalizione della Montagna delle Scimmie","Bellamy",55000000],
+[151,"L'uomo da cento milioni di danari!",null,null],
+[152,"Rotta verso il cielo",null,null],
+[153,"Il mare in mezzo al cielo e il paradiso",null,null],
+[154,"Skypiea, l'isola nel cielo",null,null],
+[155,"Il mistero dell'Upper Yard",null,null],
+[156,"Le accuse dei berretti bianchi",null,null],
+[157,"La sfida con il Supremo comincia!",null,null],
+[158,"La confessione di Konis",null,null],
+[159,"Il tempio divino e la foresta del Supremo",null,null],
+[160,"L'incontro con Satori",null,null],
+[161,"Lotta nella foresta perduta",null,null],
+[162,"Chopper è in pericolo!",null,null],
+[163,"Una prova d'amore?",null,null],
+[164,"L'attacco di Shandia",null,null],
+[165,"La scoperta di Jaya, l'isola dell'oro",null,null],
+[166,"Festa all'Upper Yard",null,null],
+[167,"L'apparizione del Divino Eneru",null,null],
+[168,"Le rivelazioni di Gan Foll",null,null],
+[169,"Eneru all'attacco!",null,null],
+[170,"Feroci battaglie",null,null],
+[171,"Rufy contro Wiper","Wiper",null],
+[172,"La prova della palude!",null,null],
+[173,"L'imbattibile superiorità di Eneru",null,null],
+[174,"Shandora, la città fantasma",null,null],
+[175,"Chopper contro il sacerdote Ohm",null,null],
+[176,"Scontro a quattro fra le rovine",null,null],
+[177,"L'ultima follia della prova del ferro",null,null],
+[178,"Zoro il pirata contro Ohm il sacerdote",null,null],
+[179,"Il quintetto finale",null,null],
+[180,"Il vero obiettivo di Eneru",null,null],
+[181,"L'Arca Maxim",null,null],
+[182,"Scontro finale!","Eneru",null],
+[183,"Il decollo dell'arca e la comparsa di Despia",null,null],
+[184,"La sconfitta di Rufy",null,null],
+[185,"Un salvataggio in nome dell'amore!",null,null],
+[186,"L'inizio della catastrofe",null,null],
+[187,"La storia di Calgara e Nolan",null,null],
+[188,"La guarigione",null,null],
+[189,"Un'eterna amicizia",null,null],
+[190,"La scomparsa di Angel Island",null,null],
+[191,"L'ultima possibilità di fuga",null,null],
+[192,"Il miracolo e il canto dell'isola",null,null],
+[193,"La fine della battaglia",null,null],
+[194,"Fuga improvvisa",null,null],
+[195,"Ritorno a casa",null,null]
+];
+
+// [numero, titolo (italiano), nemico-o-null, taglia in berry-o-null]
+const WATER_SEVEN_ENIES_LOBBY_EPISODES = [
+[229,"Il treno marino e la metropoli dell'acqua",null,null],
+[230,"Avventura nella metropoli dell'acqua",null,null],
+[231,"La Franky Family",null,null],
+[232,"Il cantiere numero 1 della Galley Company",null,null],
+[233,"Il rapimento",null,null],
+[234,"Assalto alla Franky House",null,null],
+[235,"Duello sotto le stelle",null,null],
+[236,"Rufy contro Usopp: una questione d'onore",null,null],
+[237,"La misteriosa aggressione di Iceberg",null,null],
+[238,"Rufy contro il cyborg sputa-fuoco",null,null],
+[239,"Franky contro gli uomini della Galley Company",null,null],
+[240,"L'oscuro segreto di Nico Robin",null,null],
+[241,"Ritroviamo Nico Robin!",null,null],
+[242,"L'attacco alla Galley Company",null,null],
+[243,"L'identità segreta della CP9 viene smascherata",null,null],
+[244,"Iceberg di fronte alla verità",null,null],
+[245,"Il sogno di Robin",null,null],
+[246,"La CP9 in cerca di Franky",null,null],
+[247,"Le lacrime di Usopp",null,null],
+[248,"La storia di Franky",null,null],
+[249,"Il complotto di Spandam",null,null],
+[250,"L'addio all'uomo leggendario",null,null],
+[251,"La verità di Nico Robin",null,null],
+[252,"Il treno dell'addio",null,null],
+[253,"L'intuizione di Sanji",null,null],
+[254,"Il tormento di Nami",null,null],
+[255,"Alla ricerca di un'imbarcazione",null,null],
+[256,"Missione di salvataggio",null,null],
+[257,"Rufy e Zoro contro la grande onda",null,null],
+[258,"Una nuova identità",null,null],
+[259,"Scontro fra cuochi!",null,null],
+[260,"Combattimento sul tetto del treno",null,null],
+[261,"Duello tra spadaccini",null,null],
+[262,"Un semplice piano di fuga",null,null],
+[263,"L'isola giudiziaria",null,null],
+[264,"Preparativi per l'attacco",null,null],
+[265,"Attacco a Enies Lobby",null,null],
+[266,"I guardiani giganti",null,null],
+[267,"Tattica di sfondamento",null,null],
+[268,"Di nuovo uniti",null,null],
+[269,"L'inganno",null,null],
+[270,"Ridateci Robin!",null,null],
+[271,"Tutti al Palazzo di Giustizia",null,null],
+[272,"Il Palazzo di Giustizia è più vicino",null,null],
+[273,"Amici da salvare",null,null],
+[274,"Un aiuto respinto",null,null],
+[275,"La bambina emarginata",null,null],
+[276,"Il ritorno di Olvia",null,null],
+[277,"La tragedia di Ohara",null,null],
+[278,"Fuga dall'isola di Ohara",null,null],
+[279,"Un tuffo nel passato",null,null],
+[280,"La ciurma agli albori",null,null],
+[281,"Le lacrime di Nami",null,null],
+[282,"Le separazioni che rafforzano",null,null],
+[283,"L'importanza dell'amicizia",null,null],
+[284,"La decisione di Franky",null,null],
+[285,"Alla ricerca delle cinque chiavi",null,null],
+[286,"La trasformazione di Kaku e Jabura",null,null],
+[287,"Sanji, il gentiluomo",null,null],
+[288,"Il passaggio segreto",null,null],
+[289,"Franky si scatena",null,null],
+[290,"Chopper e la sfera rombante proibita",null,null],
+[291,"L'agente Rufy e il magistrato corrotto",null,null],
+[292,"Il lancio delle polpette di riso",null,null],
+[293,"Bolle",null,null],
+[294,"La battaglia continua",null,null],
+[295,"Miraggi e bolle di sapone",null,null],
+[296,"La decisione di Nami",null,null],
+[297,"Sanji, il cacciatore",null,null],
+[298,"Calci vincenti",null,null],
+[299,"A spada tratta",null,null],
+[300,"La vittoria di Zoro",null,null],
+[301,"Colpo di scena",null,null],
+[302,"Robin finalmente libera",null,null],
+[303,"Il mistero del ciliegio scomparso",null,null],
+[304,"Isola sotto attacco",null,null],
+[305,"Il passato di Lucci","Rob Lucci",null],
+[306,"La leggenda delle sirene",null,null],
+[307,"La disperazione di Franky",null,null],
+[308,"L'ultimo ostacolo",null,null],
+[309,"La forza della disperazione",null,null],
+[310,"Un amico venuto dal mare",null,null],
+[311,"La grande fuga!",null,null],
+[312,"Grazie ancora, Going Merry!",null,null],
+[313,"La pace è finita!",null,null],
+[314,"Una famiglia molto potente",null,null],
+[315,"Il suo nome è \"Nuovo Mondo\"",null,null],
+[316,"La mossa di Shanks",null,null],
+[317,"La ragazza in cerca del proprio Yagara",null,null],
+[318,"Una grande famiglia",null,null],
+[319,"Una sorpresa per Sanji!",null,null],
+[320,"La taglia",null,null],
+[321,"La nave dei sogni è finita!",null,null],
+[322,"Addio, miei cari seguaci!",null,null],
+[323,"Addio, Water Seven! Bentornato, Usopp!",null,null],
+[324,"Fuorilegge, ma sempre amati",null,null],
+[325,"L'oscurità di Barbanera","Barbanera (Marshall D. Teach)",null],
+[326,"Una misteriosa ciurma di pirati",null,null],
+[327,"Accerchiamento navale",null,null],
+[328,"Un sogno che affonda",null,null],
+[329,"Tutti pronti per lo scontro sui ghiacci",null,null],
+[330,"Lotta per la bandiera",null,null],
+[331,"Trottola incandescente!",null,null],
+[332,"La casa del grande caos",null,null],
+[333,"Il ritorno della Fenice!",null,null],
+[334,"Uno scontro ad alte temperature",null,null],
+[335,"Addio a un coraggioso pirata",null,null],
+[336,"Chopperman alla riscossa",null,null]
+];
+
+let state = null;
+let currentView = 'episodes';
+let editingEp = null;
+let editingSaga = null;
+let pendingImage = null;
+let saveTimer = null;
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function makeEpisode(num, title, villainName, watched, bounty){
+  return {
+    id: uid(), num, title, watched: !!watched,
+    villainName: villainName || '',
+    villainImage: null, villainImageUrl: null,
+    villainBounty: (bounty !== undefined && bounty !== null) ? bounty : '',
+    villainNote: ''
+  };
+}
+
+const SAGA_EPISODE_DATA = {
+  'East Blue': EAST_BLUE_EPISODES,
+  'Alabasta': ALABASTA_EPISODES,
+  'Skypiea': SKYPIEA_EPISODES,
+  'Water Seven & Enies Lobby': WATER_SEVEN_ENIES_LOBBY_EPISODES
+};
+
+function defaultState(){
+  const sagas = SAGA_NAMES.map((name, i) => ({
+    id: uid(), name, order: i, collapsed: i!==0, custom:false, episodes: []
+  }));
+  sagas.forEach(saga => {
+    const data = SAGA_EPISODE_DATA[saga.name];
+    if(!data) return;
+    data.forEach(([num,title,villain,bounty]) => {
+      saga.episodes.push(makeEpisode(num, title, villain, false, bounty));
+    });
+  });
+  return { sagas };
+}
+
+function migrateSagaData(){
+  Object.keys(SAGA_EPISODE_DATA).forEach(sagaName => {
+    const saga = state.sagas.find(s => s.name === sagaName);
+    if(!saga) return;
+    const data = SAGA_EPISODE_DATA[sagaName];
+    const byNum = {};
+    data.forEach(([num,title,villain,bounty]) => { byNum[num] = {title,villain,bounty}; });
+
+    const existingNums = new Set(saga.episodes.map(e => e.num));
+    data.forEach(([num,title,villain,bounty]) => {
+      if(!existingNums.has(num)){
+        saga.episodes.push(makeEpisode(num, title, villain, false, bounty));
+      }
+    });
+
+    saga.episodes.forEach(ep => {
+      const ref = byNum[ep.num];
+      if(!ref) return;
+      if(ref.title && ep.title !== ref.title) ep.title = ref.title;
+      if((ep.villainBounty === '' || ep.villainBounty === null || ep.villainBounty === undefined) && ref.bounty){
+        ep.villainBounty = ref.bounty;
+      }
+    });
+  });
+}
+
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, true);
+    if(res && res.value){
+      state = JSON.parse(res.value);
+      migrateSagaData();
+      await persist(true);
+    } else {
+      state = defaultState();
+      await persist(true);
+    }
+  }catch(e){
+    console.error(e);
+    state = defaultState();
+  }
+  render();
+}
+
+async function persist(silent){
+  try{
+    if(!silent) showSaveIndicator('Salvataggio…', false);
+    const res = await window.storage.set(STORAGE_KEY, JSON.stringify(state), true);
+    if(!res) throw new Error('no result');
+    if(!silent) showSaveIndicator('Salvato ✓', false, true);
+  }catch(e){
+    console.error(e);
+    showSaveIndicator('Errore nel salvataggio', true);
+  }
+}
+function queueSave(){ clearTimeout(saveTimer); saveTimer = setTimeout(()=>persist(false), 350); }
+let hideTimer = null;
+function showSaveIndicator(text, isErr, autoHide){
+  const el = document.getElementById('saveIndicator');
+  el.textContent = text;
+  el.classList.toggle('err', !!isErr);
+  el.classList.add('show');
+  clearTimeout(hideTimer);
+  if(autoHide){ hideTimer = setTimeout(()=> el.classList.remove('show'), 1400); }
+}
+
+/* ---------- view switching ---------- */
+function switchView(view){
+  currentView = view;
+  document.getElementById('tabEpisodes').classList.toggle('active', view==='episodes');
+  document.getElementById('tabGallery').classList.toggle('active', view==='gallery');
+  document.getElementById('viewTrack').style.transform = view==='episodes' ? 'translateX(0)' : 'translateX(-50%)';
+  renderNav();
+}
+document.getElementById('tabEpisodes').addEventListener('click', ()=>switchView('episodes'));
+document.getElementById('tabGallery').addEventListener('click', ()=>switchView('gallery'));
+
+let touchStartX = 0, touchStartY = 0;
+const viewWrap = document.getElementById('viewWrap');
+viewWrap.addEventListener('touchstart', e=>{
+  touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+}, {passive:true});
+viewWrap.addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){
+    if(dx < 0 && currentView === 'episodes') switchView('gallery');
+    else if(dx > 0 && currentView === 'gallery') switchView('episodes');
+  }
+});
+
+/* ---------- render ---------- */
+function render(){ renderNav(); renderSagas(); renderGallery(); renderStats(); }
+
+function renderStats(){
+  let watched=0, villains=0;
+  state.sagas.forEach(s=>s.episodes.forEach(e=>{
+    if(e.watched) watched++;
+    if(e.watched && e.villainName) villains++;
+  }));
+  document.getElementById('statWatched').textContent = watched + (watched===1?' puntata vista':' puntate viste');
+  document.getElementById('statVillains').textContent = villains + (villains===1?' nemico incontrato':' nemici incontrati');
+}
+
+function renderNav(){
+  const nav = document.getElementById('sagaNav');
+  nav.classList.remove('saga-select-wrap');
+  nav.innerHTML = '';
+  state.sagas.slice().sort((a,b)=>a.order-b.order).forEach(s=>{
+    const pill = document.createElement('button');
+    pill.className = 'nav-pill';
+    pill.textContent = s.name;
+    pill.onclick = () => {
+      s.collapsed = false;
+      const targetId = currentView === 'episodes' ? 'saga-'+s.id : 'gal-saga-'+s.id;
+      const target = document.getElementById(targetId);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      render();
+    };
+    nav.appendChild(pill);
+  });
+}
+
+function renderSagas(){
+  const list = document.getElementById('sagaList');
+  list.innerHTML = '';
+  state.sagas.slice().sort((a,b)=>a.order-b.order).forEach((saga, idx) => {
+    const total = saga.episodes.length;
+    const watched = saga.episodes.filter(e=>e.watched).length;
+    const pct = total ? Math.round(watched/total*100) : 0;
+
+    const section = document.createElement('div');
+    section.className = 'saga-section' + (saga.collapsed ? ' collapsed' : '');
+    section.id = 'saga-'+saga.id;
+
+    const header = document.createElement('div');
+    header.className = 'saga-header';
+    header.innerHTML = `
+      <div class="saga-num">${idx+1}</div>
+      <div class="saga-name">${escapeHtml(saga.name)}</div>
+      <div class="saga-progress">${watched}/${total}</div>
+      <div class="saga-tools"><button class="icon-btn" data-act="rename" title="Rinomina">✎</button></div>
+      <div class="saga-caret">▾</div>
+    `;
+    header.addEventListener('click', (e)=>{
+      if(e.target.closest('.icon-btn')) return;
+      saga.collapsed = !saga.collapsed;
+      render();
+    });
+    header.querySelector('[data-act="rename"]').addEventListener('click',(e)=>{
+      e.stopPropagation(); openSagaModal(saga.id);
+    });
+    section.appendChild(header);
+
+    if(total){
+      const bar = document.createElement('div');
+      bar.className = 'progress-bar';
+      bar.innerHTML = `<div class="progress-bar-fill" style="width:${pct}%"></div>`;
+      section.appendChild(bar);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'saga-body';
+    const epList = document.createElement('div');
+    epList.className = 'ep-list';
+
+    if(total === 0){
+      const note = document.createElement('div');
+      note.className = 'empty-note';
+      note.textContent = 'Nessuna puntata caricata in questa saga. Aggiungetele man mano che guardate.';
+      epList.appendChild(note);
+    }
+
+    saga.episodes.slice().sort((a,b)=>a.num-b.num).forEach(ep => {
+      epList.appendChild(renderEpRow(saga, ep));
+    });
+
+    const addRow = document.createElement('div');
+    addRow.className = 'add-ep-row';
+    addRow.textContent = '+ Aggiungi puntata';
+    addRow.onclick = () => openEpModal(saga.id, null);
+    epList.appendChild(addRow);
+
+    body.appendChild(epList);
+    section.appendChild(body);
+    list.appendChild(section);
+  });
+}
+
+function renderEpRow(saga, ep){
+  const row = document.createElement('div');
+  row.className = 'ep-row' + (ep.watched ? ' watched' : '');
+
+  const villainImg = ep.villainImage || ep.villainImageUrl;
+  const chip = (ep.watched && ep.villainName) ? `
+    <div class="ep-villain-chip" data-act="villain">
+      <span class="ep-villain-avatar">
+        ${villainImg ? `<img src="${escapeAttr(villainImg)}" alt="">` :
+        `<svg viewBox="0 0 24 24" fill="none" stroke="#e4c069" stroke-width="1.6"><circle cx="12" cy="9" r="4"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>`}
+      </span>
+      <span>${escapeHtml(ep.villainName)}</span>
+    </div>` : '';
+
+  row.innerHTML = `
+    <div class="ep-check">✓</div>
+    <div class="ep-main">
+      <div class="ep-title"><span class="ep-num">${ep.num}.</span>${escapeHtml(ep.title)}</div>
+      ${chip}
+    </div>
+    <button class="icon-btn ep-edit-btn" data-act="edit">✎</button>
+  `;
+  row.addEventListener('click', (e)=>{
+    if(e.target.closest('[data-act]')) return;
+    toggleEpisode(saga.id, ep.id);
+  });
+  const chipEl = row.querySelector('[data-act="villain"]');
+  if(chipEl) chipEl.addEventListener('click', (e)=>{ e.stopPropagation(); openEpModal(saga.id, ep.id, true); });
+  row.querySelector('[data-act="edit"]').addEventListener('click', (e)=>{ e.stopPropagation(); openEpModal(saga.id, ep.id, false); });
+  return row;
+}
+
+function toggleEpisode(sagaId, epId){
+  const saga = state.sagas.find(s=>s.id===sagaId);
+  const ep = saga.episodes.find(e=>e.id===epId);
+  ep.watched = !ep.watched;
+  render(); queueSave();
+}
+
+/* ---------- gallery ---------- */
+function formatBounty(n){
+  if(n === null || n === undefined || n === '') return null;
+  const num = typeof n === 'number' ? n : parseInt(n, 10);
+  if(isNaN(num) || num <= 0) return null;
+  return '฿ ' + num.toLocaleString('it-IT') + '-';
+}
+
+function renderGallery(){
+  const list = document.getElementById('galleryList');
+  list.innerHTML = '';
+  state.sagas.slice().sort((a,b)=>a.order-b.order).forEach((saga, idx) => {
+    const unlocked = saga.episodes.filter(e => e.watched && e.villainName).sort((a,b)=>a.num-b.num);
+
+    const section = document.createElement('div');
+    section.className = 'saga-section gal-section' + (saga.collapsed ? ' collapsed' : '');
+    section.id = 'gal-saga-'+saga.id;
+
+    const header = document.createElement('div');
+    header.className = 'saga-header';
+    header.innerHTML = `
+      <div class="saga-num">${idx+1}</div>
+      <div class="saga-name">${escapeHtml(saga.name)}</div>
+      <div class="saga-progress">${unlocked.length} sbloccat${unlocked.length===1?'o':'i'}</div>
+      <div class="saga-caret">▾</div>
+    `;
+    header.addEventListener('click', ()=>{ saga.collapsed = !saga.collapsed; render(); });
+    section.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'saga-body';
+    const grid = document.createElement('div');
+    grid.className = 'villain-grid';
+
+    if(unlocked.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'gal-empty';
+      empty.textContent = 'Nessun nemico sbloccato qui. Spuntate qualche puntata nella scheda Episodi!';
+      grid.appendChild(empty);
+    } else {
+      unlocked.forEach(ep => grid.appendChild(renderPoster(saga, ep)));
+    }
+
+    section.appendChild(body);
+    body.appendChild(grid);
+    list.appendChild(section);
+  });
+}
+
+function renderPoster(saga, ep){
+  const card = document.createElement('div');
+  card.className = 'poster';
+  const rot = ((ep.id.charCodeAt(0) % 5) - 2) * 0.7;
+  card.style.setProperty('--rot', rot + 'deg');
+
+  const img = ep.villainImage || ep.villainImageUrl;
+  const bountyStr = formatBounty(ep.villainBounty);
+
+  card.innerHTML = `
+    <div class="poster-inner">
+      <div class="poster-wanted">Wanted</div>
+      <div class="poster-frame">
+        ${img ? `<img src="${escapeAttr(img)}" alt="">` :
+        `<svg class="poster-placeholder" viewBox="0 0 100 100" fill="none">
+           <circle cx="50" cy="38" r="22" stroke="#4a3826" stroke-width="3"/>
+           <path d="M20 90 Q50 55 80 90" stroke="#4a3826" stroke-width="3" fill="none"/>
+           <circle cx="42" cy="36" r="2.6" fill="#4a3826"/>
+           <circle cx="58" cy="36" r="2.6" fill="#4a3826"/>
+         </svg>`}
+      </div>
+      <div class="poster-subtitle"><span class="flourish">❧</span> Dead or Alive <span class="flourish">❧</span></div>
+      <div class="poster-name">${escapeHtml(ep.villainName)}</div>
+      ${bountyStr ? `<div class="poster-bounty">${bountyStr}</div>` : ''}
+      <div class="poster-footer-row">
+        <svg class="poster-seal" viewBox="0 0 24 24" fill="none" stroke="#4a3826" stroke-width="1.6">
+          <circle cx="12" cy="9" r="5"/>
+          <path d="M8 12 L5 21 L12 18 L19 21 L16 12" stroke-linejoin="round"/>
+        </svg>
+        <span class="poster-tag">Puntata ${ep.num}</span>
+      </div>
+    </div>
+  `;
+  card.addEventListener('click', ()=> openEpModal(saga.id, ep.id, true));
+  return card;
+}
+
+/* ---------- episode modal ---------- */
+function openEpModal(sagaId, epId, imageOnly){
+  editingEp = { sagaId, epId };
+  pendingImage = null;
+  const overlay = document.getElementById('epOverlay');
+  const sagaSelect = document.getElementById('fSaga');
+  sagaSelect.innerHTML = '';
+  state.sagas.slice().sort((a,b)=>a.order-b.order).forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s.id; opt.textContent = s.name;
+    sagaSelect.appendChild(opt);
+  });
+  sagaSelect.value = sagaId;
+
+  const saga = state.sagas.find(s=>s.id===sagaId);
+  const ep = epId ? saga.episodes.find(e=>e.id===epId) : null;
+
+  document.getElementById('epMetaFields').style.display = imageOnly ? 'none' : 'block';
+  document.getElementById('villainExtraFields').style.display = imageOnly ? 'none' : 'block';
+  if(imageOnly && ep){
+    document.getElementById('epSheetTitle').textContent = ep.villainName || 'Nemico';
+  } else {
+    document.getElementById('epSheetTitle').textContent = ep ? 'Modifica puntata' : 'Nuova puntata';
+  }
+  document.getElementById('fNum').value = ep ? ep.num : (Math.max(0,...saga.episodes.map(e=>e.num))+1);
+  document.getElementById('fTitle').value = ep ? ep.title : '';
+  document.getElementById('fVillainName').value = ep ? ep.villainName : '';
+  document.getElementById('fBounty').value = ep ? (ep.villainBounty || '') : '';
+  document.getElementById('fNote').value = ep ? (ep.villainNote||'') : '';
+  document.getElementById('fImgUrl').value = (ep && ep.villainImageUrl) ? ep.villainImageUrl : '';
+  document.getElementById('fFile').value = '';
+  updateImgPreview(ep ? (ep.villainImage || ep.villainImageUrl) : null);
+  document.getElementById('epDeleteRow').style.display = (ep && !imageOnly) ? 'block' : 'none';
+  updateGoogleBtn();
+
+  overlay.classList.add('show');
+}
+function closeEpModal(){
+  document.getElementById('epOverlay').classList.remove('show');
+  editingEp = null; pendingImage = null;
+}
+function updateImgPreview(src){
+  const box = document.getElementById('imgPreview');
+  const removeBtn = document.getElementById('fRemoveImg');
+  if(src){
+    box.innerHTML = `<img src="${escapeAttr(src)}" alt="">`;
+    removeBtn.style.display = 'inline';
+  } else {
+    box.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#cf9f3f" stroke-width="1.4"><path d="M2 8 L12 3 L22 8 L12 13 Z"/><path d="M6 10 v7 M18 10 v7 M6 17 h12"/><circle cx="12" cy="8" r="1.4" fill="#cf9f3f"/></svg>`;
+    removeBtn.style.display = 'none';
+  }
+}
+function updateGoogleBtn(){
+  const name = document.getElementById('fVillainName').value.trim();
+  const btn = document.getElementById('fGoogleBtn');
+  btn.disabled = !name;
+  btn.textContent = name ? `🔍 Cerca "${name}" su Google Immagini` : '🔍 Scrivi prima il nome del nemico';
+}
+document.getElementById('fVillainName').addEventListener('input', updateGoogleBtn);
+document.getElementById('fGoogleBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('fVillainName').value.trim();
+  if(!name) return;
+  window.open('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(name + ' one piece personaggio'), '_blank');
+});
+
+document.getElementById('fUploadBtn').addEventListener('click', ()=> document.getElementById('fFile').click());
+document.getElementById('fFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  compressImage(file, (dataUrl)=>{
+    pendingImage = { type:'upload', data: dataUrl };
+    document.getElementById('fImgUrl').value = '';
+    updateImgPreview(dataUrl);
+  });
+});
+document.getElementById('fImgUrl').addEventListener('input', (e)=>{
+  const url = e.target.value.trim();
+  if(url){ pendingImage = { type:'url', data: url }; updateImgPreview(url); }
+});
+document.getElementById('fRemoveImg').addEventListener('click', ()=>{
+  pendingImage = { type:'none' };
+  document.getElementById('fImgUrl').value = '';
+  document.getElementById('fFile').value = '';
+  updateImgPreview(null);
+});
+
+function compressImage(file, cb){
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 360;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = Math.round(h * maxDim/w); w = maxDim; }
+      else if(h >= w && h > maxDim){ w = Math.round(w * maxDim/h); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('epCancel').addEventListener('click', closeEpModal);
+document.getElementById('epOverlay').addEventListener('click', (e)=>{ if(e.target.id==='epOverlay') closeEpModal(); });
+
+document.getElementById('epSave').addEventListener('click', ()=>{
+  const num = parseInt(document.getElementById('fNum').value, 10);
+  const title = document.getElementById('fTitle').value.trim();
+  if(!title || isNaN(num)){ document.getElementById('fTitle').focus(); return; }
+  const newSagaId = document.getElementById('fSaga').value;
+  const villainName = document.getElementById('fVillainName').value.trim();
+  const bountyRaw = document.getElementById('fBounty').value.trim();
+  const bounty = bountyRaw ? parseInt(bountyRaw, 10) : '';
+  const note = document.getElementById('fNote').value.trim();
+
+  const { sagaId, epId } = editingEp;
+  const oldSaga = state.sagas.find(s=>s.id===sagaId);
+  let ep = epId ? oldSaga.episodes.find(e=>e.id===epId) : null;
+
+  let image = ep ? ep.villainImage : null;
+  let imageUrl = ep ? ep.villainImageUrl : null;
+  if(pendingImage){
+    if(pendingImage.type === 'upload'){ image = pendingImage.data; imageUrl = null; }
+    else if(pendingImage.type === 'url'){ imageUrl = pendingImage.data; image = null; }
+    else if(pendingImage.type === 'none'){ image = null; imageUrl = null; }
+  }
+
+  if(!ep){
+    const newSaga = state.sagas.find(s=>s.id===newSagaId);
+    newSaga.episodes.push({
+      id: uid(), num, title, watched: true,
+      villainName, villainImage: image, villainImageUrl: imageUrl,
+      villainBounty: bounty, villainNote: note
+    });
+  } else {
+    ep.num = num; ep.title = title; ep.villainName = villainName;
+    ep.villainBounty = bounty; ep.villainNote = note;
+    ep.villainImage = image; ep.villainImageUrl = imageUrl;
+    if(newSagaId !== sagaId){
+      oldSaga.episodes = oldSaga.episodes.filter(e=>e.id!==epId);
+      const newSaga = state.sagas.find(s=>s.id===newSagaId);
+      newSaga.episodes.push(ep);
+    }
+  }
+  closeEpModal();
+  render(); queueSave();
+});
+
+document.getElementById('epDelete').addEventListener('click', ()=>{
+  const btn = document.getElementById('epDelete');
+  if(btn.dataset.confirm !== '1'){
+    btn.dataset.confirm = '1';
+    btn.textContent = 'Sicuro? Tocca di nuovo per eliminare';
+    setTimeout(()=>{ btn.dataset.confirm=''; btn.textContent='Elimina puntata'; }, 3000);
+    return;
+  }
+  const { sagaId, epId } = editingEp;
+  const saga = state.sagas.find(s=>s.id===sagaId);
+  saga.episodes = saga.episodes.filter(e=>e.id!==epId);
+  btn.dataset.confirm=''; btn.textContent = 'Elimina puntata';
+  closeEpModal();
+  render(); queueSave();
+});
+
+/* ---------- saga modal ---------- */
+function openSagaModal(sagaId){
+  editingSaga = sagaId || null;
+  const overlay = document.getElementById('sagaOverlay');
+  const saga = sagaId ? state.sagas.find(s=>s.id===sagaId) : null;
+  document.getElementById('sagaSheetTitle').textContent = saga ? 'Rinomina saga' : 'Nuova saga';
+  document.getElementById('fSagaName').value = saga ? saga.name : '';
+  document.getElementById('sagaDeleteRow').style.display = saga ? 'block' : 'none';
+  overlay.classList.add('show');
+}
+function closeSagaModal(){ document.getElementById('sagaOverlay').classList.remove('show'); editingSaga = null; }
+document.getElementById('addSagaBtn').addEventListener('click', ()=> openSagaModal(null));
+document.getElementById('sagaCancel').addEventListener('click', closeSagaModal);
+document.getElementById('sagaOverlay').addEventListener('click', (e)=>{ if(e.target.id==='sagaOverlay') closeSagaModal(); });
+document.getElementById('sagaSave').addEventListener('click', ()=>{
+  const name = document.getElementById('fSagaName').value.trim();
+  if(!name) return;
+  if(editingSaga){
+    state.sagas.find(s=>s.id===editingSaga).name = name;
+  } else {
+    const maxOrder = state.sagas.reduce((m,s)=>Math.max(m,s.order), -1);
+    state.sagas.push({ id: uid(), name, order: maxOrder+1, collapsed:false, custom:true, episodes:[] });
+  }
+  closeSagaModal();
+  render(); queueSave();
+});
+document.getElementById('sagaDelete').addEventListener('click', ()=>{
+  const btn = document.getElementById('sagaDelete');
+  if(btn.dataset.confirm !== '1'){
+    btn.dataset.confirm = '1';
+    btn.textContent = 'Sicuro? Elimina anche tutte le puntate dentro';
+    setTimeout(()=>{ btn.dataset.confirm=''; btn.textContent='Elimina questa saga'; }, 3000);
+    return;
+  }
+  state.sagas = state.sagas.filter(s=>s.id!==editingSaga);
+  btn.dataset.confirm=''; btn.textContent = 'Elimina questa saga';
+  closeSagaModal();
+  render(); queueSave();
+});
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+loadState();
+</script>
+</body>
+</html>
